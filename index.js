@@ -30,7 +30,7 @@ http
     if (req.url == "/candidatos" && req.method === "GET") {
         const registros = await consultar();
         res.writeHead(200, {'Content-Type': 'application/json'})
-        fs.writeFileSync("candidatos.json",JSON.stringify(registros));
+        // fs.writeFileSync("candidatos.json",JSON.stringify(registros));
         res.end(JSON.stringify(registros));
     }
 
@@ -86,7 +86,7 @@ http
 // Paso 6
     if (req.url == "/historial" && req.method === "GET") {
         const registros = await consultarhistorial();
-        fs.writeFileSync("historial.json",JSON.stringify(registros));
+        // fs.writeFileSync("historial.json",JSON.stringify(registros));
         res.end(JSON.stringify(registros));
     }
 })

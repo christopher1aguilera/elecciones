@@ -38,10 +38,16 @@ const consultar = async () => {
 // Paso 3
 const eliminar = async (id) => {
     try {
-        const result = await pool.query(
+        const resultcandidato = await pool.query(
         `DELETE FROM candidatos WHERE id = '${id}'`
         );
-        return result.rows;
+        const resulthistorial = await pool.query(
+        `DELETE FROM historial`
+        );
+        const resultvotos = await pool.query(
+        `UPDATE candidatos SET votos = 0 RETURNING *`
+        );
+        return resultcandidato.rows;
     }
     catch (error) {
         console.log(error.code);
