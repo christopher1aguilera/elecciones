@@ -67,22 +67,19 @@ if ((req.url == "/votos" && req.method == "POST")) {
     let statusCode, respuesta
     if(datos[1]>0){
     respuesta = await transccion(datos, res);
-    console.log(respuesta)
-    if (respuesta == 'error'){
+    if (respuesta == undefined){
         statusCode = 500
     }
     else {
         statusCode = 200
     }
-    res.writeHead(statusCode, {'Content-Type': 'application/json'})
-    res.end(JSON.stringify(respuesta));
     }
     else{
     console.log('ingrese numero valido')
     statusCode = 403
     }
-    // res.writeHead(statusCode, {'Content-Type': 'application/json'})
-    // res.end(JSON.stringify(respuesta));
+    res.writeHead(statusCode, {'Content-Type': 'application/json'})
+    res.end(JSON.stringify(respuesta));
     });
     }
 
@@ -94,3 +91,10 @@ if (req.url == "/historial" && req.method === "GET") {
     }
 })
 .listen(3000);
+
+
+// .catch(err => {
+//     res.writeHead(500);
+//     res.end(err);
+//     return;
+// });

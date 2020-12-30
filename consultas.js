@@ -85,8 +85,6 @@ const transccion = async (datos) => {
         console.log("Detalle del error: " + e.detail);
         console.log("Tabla originaria del error: " + e.table);
         console.log("Restricción violada en el campo: " + e.constraint);
-        const info = 'error'
-        return info
     }
 }
 
