@@ -21,6 +21,7 @@ body += payload;
 req.on("end", async () => {
 const datos = Object.values(JSON.parse(body));
 const respuesta = await insertar(datos);
+res.writeHead(200, {'Content-Type': 'application/json'})
 res.end(JSON.stringify(respuesta));
 });
 }
@@ -28,6 +29,7 @@ res.end(JSON.stringify(respuesta));
 // Paso 2
 if (req.url == "/candidatos" && req.method === "GET") {
     const registros = await consultar();
+    res.writeHead(200, {'Content-Type': 'application/json'})
     fs.writeFileSync("candidatos.json",JSON.stringify(registros));
     res.end(JSON.stringify(registros));
     }
@@ -36,10 +38,11 @@ if (req.url == "/candidatos" && req.method === "GET") {
 if (req.url.startsWith("/candidato?") && req.method == "DELETE") {
     const { id } = url.parse(req.url, true).query;
     const respuesta = await eliminar(id);
+    res.writeHead(200, {'Content-Type': 'application/json'})
     res.end(JSON.stringify(respuesta));
     }
 
-// // // Paso 4
+// Paso 4
 if (req.url == "/candidato" && req.method == "PUT") {
     let body = "";
     req.on("data", (payload) => {
@@ -48,6 +51,7 @@ if (req.url == "/candidato" && req.method == "PUT") {
     req.on("end", async () => {
     const datos = Object.values(JSON.parse(body));
     const respuesta = await editar(datos);
+    res.writeHead(200, {'Content-Type': 'application/json'})
     res.end(JSON.stringify(respuesta));
     });
     }
@@ -60,8 +64,25 @@ if ((req.url == "/votos" && req.method == "POST")) {
     });
     req.on("end", async () => {
     const datos = Object.values(JSON.parse(body));
-    const respuesta = await transccion(datos, res);
+    let statusCode, respuesta
+    if(datos[1]>0){
+    respuesta = await transccion(datos, res);
+    console.log(respuesta)
+    if (respuesta == 'error'){
+        statusCode = 500
+    }
+    else {
+        statusCode = 200
+    }
+    res.writeHead(statusCode, {'Content-Type': 'application/json'})
     res.end(JSON.stringify(respuesta));
+    }
+    else{
+    console.log('ingrese numero valido')
+    statusCode = 403
+    }
+    // res.writeHead(statusCode, {'Content-Type': 'application/json'})
+    // res.end(JSON.stringify(respuesta));
     });
     }
 
@@ -71,46 +92,5 @@ if (req.url == "/historial" && req.method === "GET") {
     fs.writeFileSync("historial.json",JSON.stringify(registros));
     res.end(JSON.stringify(registros));
     }
-
-
-// // Paso  error
-//     res.writeHead(404, {'Content-Type': 'text/html'})
-//     fs.readFile('404.html','utf-8',(err, file)=>{
-//       if(err) throw err
-//       res.write(file)
-//       res.end()
-//     //   res.end("Servidor funcionando =D !");
-//     if (req.url == "/ejercicios" && req.method === "GET") {
-//         const registros = await consultar();
-//         res.statusCode = 200;
-//         res.end(JSON.stringify(registros));
-//         }
-        
-//         if (req.url == "/ejercicios" && req.method == "POST") {
-//             let body = "";
-//             req.on("data", (chunk) => {
-//             body += chunk;
-//             });
-//             req.on("end", async () => {
-//             const datos = Object.values(JSON.parse(body));
-//             const respuesta = await insertar(datos);
-//             res.statusCode = 201
-//             res.end(JSON.stringify(respuesta));
-//             });
-//             }
-
-//             if (req.url == "/ejercicios" && req.method == "PUT") {
-//                 let body = "";
-//                 req.on("data", (chunk) => {
-//                 body += chunk;
-//                 });
-//                 req.on("end", async () => {
-//                 const datos = Object.values(JSON.parse(body));
-//                 await editar(datos);
-//                 res.statusCode = 200;
-//                 res.end("Recurso editado con éxito!");
-//                 });
-//                 }
-//     })
 })
 .listen(3000);

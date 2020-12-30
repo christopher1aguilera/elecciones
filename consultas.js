@@ -22,7 +22,7 @@ return error;
 };
 
 // Paso 2
-const consultar = async (datos) => {
+const consultar = async () => {
     try {
     const result = await pool.query("SELECT * FROM candidatos");
     return result.rows;
@@ -61,7 +61,7 @@ const editar = async (datos) => {
     };
 
 // Paso 5
-const transccion = async (datos, res) => {
+const transccion = async (datos) => {
     // pool.connect(async (error_conexion, client, release) => {
     // if (error_conexion) return console.error(error_conexion.code);
     await pool.query("BEGIN");
@@ -85,10 +85,9 @@ const transccion = async (datos, res) => {
         console.log("Detalle del error: " + e.detail);
         console.log("Tabla originaria del error: " + e.table);
         console.log("Restricción violada en el campo: " + e.constraint);
-        }
-        // release();
-        // pool.end();
-    // });
+        const info = 'error'
+        return info
+    }
 }
 
 // Paso 6
@@ -107,6 +106,5 @@ const consultarhistorial = async (datos) => {
     return error;
     }
     };
-
 
 module.exports = { insertar, consultar, editar, eliminar, transccion, consultarhistorial};
